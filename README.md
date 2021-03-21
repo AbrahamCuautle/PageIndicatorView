@@ -28,5 +28,5 @@ or use PageIndicatorMediator. There is no need to call ```setPageIndicatorsCount
 
 ```
     viewpager2.setAdapter(...)
-    PageIndicatorMediator(viewpager2, pageIndicatorView)
+    PageIndicatorMediator(viewpager2, pageIndicatorView).attach()
 ```
