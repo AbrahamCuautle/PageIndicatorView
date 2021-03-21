@@ -7,7 +7,7 @@
 </p>
 
 <p>
-    <img src="images/images1.gif"/>
+    ![Screenshot](images/image1.gif)
 </p>
 
 ## Basic Usage
