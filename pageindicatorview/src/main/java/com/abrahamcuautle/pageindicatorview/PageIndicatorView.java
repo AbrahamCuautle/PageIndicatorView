@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -15,7 +14,9 @@ import androidx.core.view.ViewCompat;
 
 public class PageIndicatorView extends View {
 
-    private final int MIN_HEIGHT = 40;
+    private final int MIN_HEIGHT = 60;
+
+    private final int DEFAULT_PADDING = 15;
 
     private final long mDuration = 200L;
 
@@ -86,11 +87,29 @@ public class PageIndicatorView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d("TAG_APP", " onMeasure laid out: " + ViewCompat.isLaidOut(this));
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+
+        int width = 0;
+
+        switch (widthMode) {
+            case MeasureSpec.EXACTLY:
+                width = widthSize;
+                break;
+            case MeasureSpec.AT_MOST:
+            case MeasureSpec.UNSPECIFIED:
+                computeMaxWidthPageIndicator();
+
+                int desiredPaddingLeft = getPaddingLeft() == 0 ? DEFAULT_PADDING : getPaddingLeft();
+                int desiredPaddingRight = getPaddingRight() == 0 ? DEFAULT_PADDING : getPaddingRight();
+                int desiredWidth = mMaxWidthPageIndicatorsDistribution + desiredPaddingLeft + desiredPaddingRight;
+
+                width = Math.min(desiredWidth, widthSize);
+                break;
+        }
 
         int height = 0;
 
@@ -99,23 +118,24 @@ public class PageIndicatorView extends View {
                 height = heightSize;
                 break;
             case MeasureSpec.AT_MOST:
-                height = Math.min(MIN_HEIGHT, heightSize);
+                int desiredPaddingTop = getPaddingTop() == 0 ? DEFAULT_PADDING : getPaddingTop();
+                int desiredPaddingBottom = getPaddingBottom() == 0 ? DEFAULT_PADDING : getPaddingBottom();
+                int desiredHeight = mRadius * 2 + desiredPaddingTop + desiredPaddingBottom;
+                height = Math.min(desiredHeight, heightSize);
                 break;
             case MeasureSpec.UNSPECIFIED:
                 height = MIN_HEIGHT;
                 break;
         }
 
-        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, heightMode));
+        super.onMeasure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, heightMode));
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        Log.d("TAG_APP", " onLayout 1 laid out: " + ViewCompat.isLaidOut(this));
         if (mPendingComputePageIndicatorSize) {
             mPendingComputePageIndicatorSize = false;
-            Log.d("TAG_APP", " onLayout 2 laid out: " + ViewCompat.isLaidOut(this));
             computeIndicatorSizeAndPositions();
         }
     }
@@ -123,7 +143,6 @@ public class PageIndicatorView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d("TAG_APP", " onDraw laid out: " + ViewCompat.isLaidOut(this));
         //Draw unselected page indicators
         for (int i = 0; i < mPageIndicatorsCount; i++) {
             float cx = mPageIndicators[i].getCx();
