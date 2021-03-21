@@ -1,0 +1,3 @@
+include ':pageindicatorview'
+include ':app'
+rootProject.name = "PageIndicatorView"
