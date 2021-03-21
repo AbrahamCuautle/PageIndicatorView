@@ -6,9 +6,7 @@
     Animating Page indicator. It is mainly intended to work with ViewPager2
 </p>
 
-<p>
-    ![Screenshot](images/image1.gif)
-</p>
+![Screenshot](https://github.com/AbrahamCuautle/PageIndicatorView/blob/main/images/image1.gif)
 
 ## Basic Usage
 
