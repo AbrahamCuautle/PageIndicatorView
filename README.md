@@ -6,9 +6,7 @@
     Animating Page indicator. It is mainly intended to work with ViewPager2
 </p>
 
-<p>
-    <img src="images/images1.gif"/>
-</p>
+![Screenshot](https://github.com/AbrahamCuautle/PageIndicatorView/blob/main/images/image1.gif)
 
 ## Basic Usage
 
@@ -32,8 +30,5 @@ or use PageIndicatorMediator. There is no need to call ```setPageIndicatorsCount
 
 ```
     viewpager2.setAdapter(...)
-    PageIndicatorMediator(viewpager2, pageIndicatorView)
-```
-    viewpager2.setAdapter(...)
-    PageIndicatorMediator(viewpager2, pageIndicatorView)
+    PageIndicatorMediator(viewpager2, pageIndicatorView).attach()
 ```
