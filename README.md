@@ -22,6 +22,8 @@
         app:indicator_radius="6dp"
         app:indicator_spacing="8dp"/>
 ```
+Then call:
+
 ```
    pageIndicatorView.setPageIndicatorsCount(...)
    pageIndicatorView.selectPosition(...)
