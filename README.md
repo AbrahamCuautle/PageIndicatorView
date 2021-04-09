@@ -22,13 +22,13 @@
 ```
 Then call:
 
-```
+```java
    pageIndicatorView.setPageIndicatorsCount(...)
    pageIndicatorView.selectPosition(...)
 ```
 or use PageIndicatorMediator. There is no need to call ```setPageIndicatorsCount()```or ```selectPosition()``` but set an adapter before call ```PageIndicatorMediator.attach()```
 
-```
+```java
     viewpager2.setAdapter(...)
     PageIndicatorMediator(viewpager2, pageIndicatorView).attach()
 ```
