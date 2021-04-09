@@ -7,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -132,8 +133,8 @@ public class PageIndicatorView extends View {
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         if (mPendingComputePageIndicatorSize) {
             mPendingComputePageIndicatorSize = false;
             computeIndicatorSizeAndPositions();
@@ -163,9 +164,11 @@ public class PageIndicatorView extends View {
                 mRadius,
                 mPaintSelected);
 
+        Log.d("TAG_APP", "Left:  " + mLeftSelectedPageIndicator + " Right: " + mRightSelectedPageIndicator);
+
     }
 
-    private boolean isPositionInRange(int position) {
+    private boolean isPositionValid(int position) {
         return position >= 0 && position < mPageIndicatorsCount;
     }
 
@@ -184,6 +187,7 @@ public class PageIndicatorView extends View {
 
         for (int i = 0; i < mPageIndicatorsCount; i++) {
             cx += (mRadius * 2) + mSpacing;
+            Log.d("TAG_APP", "Cx: " + cx + "Cy: " + cy);
             mPageIndicators[i].setCx(cx);
             mPageIndicators[i].setCy(cy);
         }
@@ -191,8 +195,9 @@ public class PageIndicatorView extends View {
 
     private void computeInitialWidthSelectedPageIndicator() {
         if (mPageIndicatorsCount > 0 ){
-            mLeftSelectedPageIndicator = mPageIndicators[0].getCx() - mRadius;
-            mRightSelectedPageIndicator = mPageIndicators[0].getCx() + mRadius;
+            mLeftSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() - mRadius;
+            mRightSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() + mRadius;
+            Log.d("TAG_APP", "Left:  " + mLeftSelectedPageIndicator + " Right: " + mRightSelectedPageIndicator);
         }
     }
 
@@ -243,12 +248,14 @@ public class PageIndicatorView extends View {
             return;
         }
 
-        if (position > mSelectedPageIndicatorPosition) {
-            mBackwardAnimation.cancel();
-            mForwardAnimation.start(position, animated);
-        } else {
-            mForwardAnimation.cancel();
-            mBackwardAnimation.start(position, animated);
+        if (ViewCompat.isLaidOut(this) && !isLayoutRequested()) {
+            if (position > mSelectedPageIndicatorPosition) {
+                mBackwardAnimation.cancel();
+                mForwardAnimation.start(position, animated);
+            } else {
+                mForwardAnimation.cancel();
+                mBackwardAnimation.start(position, animated);
+            }
         }
 
         mSelectedPageIndicatorPosition = position;
@@ -274,7 +281,7 @@ public class PageIndicatorView extends View {
 
         private void drawDotNextPosition() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
@@ -287,7 +294,7 @@ public class PageIndicatorView extends View {
 
         private void startSelectedPageIndicatorExpandAnimation() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
@@ -328,7 +335,7 @@ public class PageIndicatorView extends View {
 
         private void startSelectedPageIndicatorCollapseAnimation() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
@@ -376,7 +383,7 @@ public class PageIndicatorView extends View {
 
         private void drawDotNextPosition() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
@@ -389,7 +396,7 @@ public class PageIndicatorView extends View {
 
         private void startSelectedPageIndicatorExpandAnimation() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
@@ -431,7 +438,7 @@ public class PageIndicatorView extends View {
 
         private void startSelectedPageIndicatorCollapseAnimation() {
 
-            if (mPageIndicators == null && !isPositionInRange(position)){
+            if (mPageIndicators == null && !isPositionValid(position)){
                 return;
             }
 
