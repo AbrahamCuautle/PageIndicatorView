@@ -1,19 +1,21 @@
 package com.abrahamcuautle.pageindicatorview;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 public class PageIndicatorView extends View {
+
+    private final int NO_POSITION = -1;
 
     private final int MIN_HEIGHT = 60;
 
@@ -23,7 +25,7 @@ public class PageIndicatorView extends View {
 
     private final Paint mPaintSelected = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private final Paint mPaintUnselected = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mPaintDeselected = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int mPageIndicatorsCount;
 
@@ -39,7 +41,7 @@ public class PageIndicatorView extends View {
 
     private float mRightSelectedPageIndicator;
 
-    private int mSelectedPageIndicatorPosition;
+    private int mSelectedPageIndicatorPosition = NO_POSITION;
 
     private final ForwardAnimation mForwardAnimation = new ForwardAnimation();
 
@@ -72,7 +74,7 @@ public class PageIndicatorView extends View {
 
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_unselected_color)) {
             int color = typedArray.getColor(R.styleable.PageIndicatorView_indicator_unselected_color, 0);
-            mPaintUnselected.setColor(color);
+            mPaintDeselected.setColor(color);
         }
 
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_radius)) {
@@ -133,22 +135,19 @@ public class PageIndicatorView extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
         if (mPendingComputePageIndicatorSize) {
             mPendingComputePageIndicatorSize = false;
             computeIndicatorSizeAndPositions();
         }
-    }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         //Draw unselected page indicators
         for (int i = 0; i < mPageIndicatorsCount; i++) {
             float cx = mPageIndicators[i].getCx();
             float cy = mPageIndicators[i].getCy();
-            canvas.drawCircle(cx, cy, mRadius, mPaintUnselected);
+            canvas.drawCircle(cx, cy, mRadius, mPaintDeselected);
         }
 
         //Draw selected page indicator
@@ -163,9 +162,6 @@ public class PageIndicatorView extends View {
                 mRadius,
                 mRadius,
                 mPaintSelected);
-
-        Log.d("TAG_APP", "Left:  " + mLeftSelectedPageIndicator + " Right: " + mRightSelectedPageIndicator);
-
     }
 
     private boolean isPositionValid(int position) {
@@ -187,17 +183,16 @@ public class PageIndicatorView extends View {
 
         for (int i = 0; i < mPageIndicatorsCount; i++) {
             cx += (mRadius * 2) + mSpacing;
-            Log.d("TAG_APP", "Cx: " + cx + "Cy: " + cy);
             mPageIndicators[i].setCx(cx);
             mPageIndicators[i].setCy(cy);
         }
     }
 
     private void computeInitialWidthSelectedPageIndicator() {
-        if (mPageIndicatorsCount > 0 ){
+        //Log.d("TAG_APP", "Position: " + mSelectedPageIndicatorPosition);
+        if (mPageIndicatorsCount > 0 && mSelectedPageIndicatorPosition != NO_POSITION){
             mLeftSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() - mRadius;
             mRightSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() + mRadius;
-            Log.d("TAG_APP", "Left:  " + mLeftSelectedPageIndicator + " Right: " + mRightSelectedPageIndicator);
         }
     }
 
@@ -233,6 +228,16 @@ public class PageIndicatorView extends View {
 
     }
 
+    public void setSelectedColor(int color) {
+        mPaintSelected.setColor(color);
+        invalidate();
+    }
+
+    public void setDeselectedColor(int color) {
+        mPaintDeselected.setColor(color);
+        invalidate();
+    }
+
     public void setRadius(int mRadius) {
         this.mRadius = mRadius;
         invalidateIndicatorSizeAndPositions();
@@ -256,6 +261,8 @@ public class PageIndicatorView extends View {
                 mForwardAnimation.cancel();
                 mBackwardAnimation.start(position, animated);
             }
+        } else {
+            mPendingComputePageIndicatorSize = true;
         }
 
         mSelectedPageIndicatorPosition = position;
@@ -308,25 +315,11 @@ public class PageIndicatorView extends View {
                 invalidate();
             });
 
-            expandAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
+            expandAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
                     startSelectedPageIndicatorCollapseAnimation();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
                 }
             });
             expandAnimator.setDuration(mDuration);
@@ -411,25 +404,11 @@ public class PageIndicatorView extends View {
                 invalidate();
             });
 
-            expandAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
+            expandAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
                     startSelectedPageIndicatorCollapseAnimation();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
                 }
             });
             expandAnimator.setDuration(mDuration);
