@@ -19,19 +19,19 @@
         app:indicator_radius="6dp"
         app:indicator_spacing="8dp"/>
 ```
-And call:
+First, you need to set a number of page indicators
+
 ```java
    pageIndicatorView.setPageIndicatorsCount(...)
 ```
-to set a number of page indicators
+Now you can select a position
 
-Then call:
 ```java
   pageIndicatorView.selectPosition(...)
 ```
-to select a page indicator
 
-or use PageIndicatorMediator. There is no need to call ```setPageIndicatorsCount()```or ```selectPosition()``` but set an adapter before call ```PageIndicatorMediator.attach()```
+or use `PageIndicatorMediator`. There is no need to call `setPageIndicatorsCount()` or `selectPosition()` by yourself.<br/>
+**Note:** you must set an adapter before call `PageIndicatorMediator.attach()`
 
 ```java
     viewpager2.setAdapter(...)
