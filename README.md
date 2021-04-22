@@ -9,7 +9,6 @@
 ![Screenshot](https://github.com/AbrahamCuautle/PageIndicatorView/blob/main/images/demo.gif)
 
 ## Basic Usage
-
 ```xml
 <com.abrahamcuautle.pageindicatorview.PageIndicatorView
         android:id="@+id/pageIndicatorView"
@@ -20,15 +19,21 @@
         app:indicator_radius="6dp"
         app:indicator_spacing="8dp"/>
 ```
-Then call:
-
-```
+And call:
+```java
    pageIndicatorView.setPageIndicatorsCount(...)
-   pageIndicatorView.selectPosition(...)
 ```
+to set a number of page indicators
+
+Then call:
+```java
+  pageIndicatorView.selectPosition(...)
+```
+to select a page indicator
+
 or use PageIndicatorMediator. There is no need to call ```setPageIndicatorsCount()```or ```selectPosition()``` but set an adapter before call ```PageIndicatorMediator.attach()```
 
-```
+```java
     viewpager2.setAdapter(...)
     PageIndicatorMediator(viewpager2, pageIndicatorView).attach()
 ```
