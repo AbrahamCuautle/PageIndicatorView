@@ -24,7 +24,7 @@ Then, add the library to your module `build.gradle`:
 dependencies {
     implementation 'com.github.AbrahamCuautle:PageIndicatorView:{latest_version}'
 }
-
+```
 
 ## Usage
 ```xml
