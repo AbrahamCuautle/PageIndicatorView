@@ -8,7 +8,25 @@
 
 ![Screenshot](https://github.com/AbrahamCuautle/PageIndicatorView/blob/main/images/demo.gif)
 
-## Basic Usage
+## Installation
+
+Add this in your root `build.gradle` file:
+```gradle
+allprojects {
+    repositories {
+        maven { url "https://www.jitpack.io" }
+    }
+}
+```
+
+Then, add the library to your module `build.gradle`:
+```gradle
+dependencies {
+    implementation 'com.github.AbrahamCuautle:PageIndicatorView:{latest_version}'
+}
+
+
+## Usage
 ```xml
 <com.abrahamcuautle.pageindicatorview.PageIndicatorView
         android:id="@+id/pageIndicatorView"
