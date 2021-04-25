@@ -19,8 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.95"
-        app:indicator_selected_color="@android:color/holo_green_light"
-        app:indicator_unselected_color="@color/design_default_color_primary"
+        app:indicator_selected_color="@color/teal_700"
+        app:indicator_unselected_color="@color/teal_200"
         app:indicator_radius="8dp"
         app:indicator_spacing="8dp"/>
 

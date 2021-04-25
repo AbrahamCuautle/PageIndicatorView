@@ -11,17 +11,20 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+
+import com.google.android.material.color.MaterialColors;
 
 public class PageIndicatorView extends View {
 
     private final int NO_POSITION = -1;
 
-    private final int MIN_HEIGHT = 60;
+    private int MIN_HEIGHT;
 
-    private final int DEFAULT_PADDING = 15;
+    private int DEFAULT_PADDING;
 
-    private final long mDuration = 200L;
+    private final long DURATION = 200L;
 
     private final Paint mPaintSelected = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -70,22 +73,35 @@ public class PageIndicatorView extends View {
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_selected_color)) {
             int color = typedArray.getColor(R.styleable.PageIndicatorView_indicator_selected_color, 0);
             mPaintSelected.setColor(color);
+        } else {
+            int defaultColor = ContextCompat.getColor(getContext(), R.color.piv_default_selected_color);
+            mPaintSelected.setColor(MaterialColors.getColor(getContext(), R.attr.colorPrimary, defaultColor));
         }
 
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_unselected_color)) {
             int color = typedArray.getColor(R.styleable.PageIndicatorView_indicator_unselected_color, 0);
             mPaintDeselected.setColor(color);
+        } else {
+            int defaultColor = ContextCompat.getColor(getContext(), R.color.piv_default_deselected_color);
+            mPaintDeselected.setColor(MaterialColors.getColor(getContext(), R.attr.colorPrimaryVariant, defaultColor));
         }
 
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_radius)) {
             mRadius = typedArray.getDimensionPixelOffset(R.styleable.PageIndicatorView_indicator_radius, 0);
+        } else {
+            mRadius = (int) DxPxUtils.dpToPx(getContext(), 8);
         }
 
         if (typedArray.hasValue(R.styleable.PageIndicatorView_indicator_spacing)) {
             mSpacing = typedArray.getDimensionPixelOffset(R.styleable.PageIndicatorView_indicator_spacing, 0);
+        } else {
+            mSpacing = (int) DxPxUtils.dpToPx(getContext(), 8);
         }
 
         typedArray.recycle();
+
+        DEFAULT_PADDING = (int) DxPxUtils.dpToPx(getContext(), 8);
+        MIN_HEIGHT = (int) DxPxUtils.dpToPx(getContext(), 15);
     }
 
     @Override
@@ -189,7 +205,6 @@ public class PageIndicatorView extends View {
     }
 
     private void computeInitialWidthSelectedPageIndicator() {
-        //Log.d("TAG_APP", "Position: " + mSelectedPageIndicatorPosition);
         if (mPageIndicatorsCount > 0 && mSelectedPageIndicatorPosition != NO_POSITION){
             mLeftSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() - mRadius;
             mRightSelectedPageIndicator = mPageIndicators[mSelectedPageIndicatorPosition].getCx() + mRadius;
@@ -322,7 +337,7 @@ public class PageIndicatorView extends View {
                     startSelectedPageIndicatorCollapseAnimation();
                 }
             });
-            expandAnimator.setDuration(mDuration);
+            expandAnimator.setDuration(DURATION);
             expandAnimator.start();
         }
 
@@ -341,7 +356,7 @@ public class PageIndicatorView extends View {
                 mLeftSelectedPageIndicator = (float) animation.getAnimatedValue();
                 invalidate();
             });
-            collapseAnimator.setDuration(mDuration);
+            collapseAnimator.setDuration(DURATION);
             collapseAnimator.start();
         }
 
@@ -411,7 +426,7 @@ public class PageIndicatorView extends View {
                     startSelectedPageIndicatorCollapseAnimation();
                 }
             });
-            expandAnimator.setDuration(mDuration);
+            expandAnimator.setDuration(DURATION);
             expandAnimator.start();
         }
 
@@ -430,7 +445,7 @@ public class PageIndicatorView extends View {
                 mRightSelectedPageIndicator = (float) animation.getAnimatedValue();
                 invalidate();
             });
-            collapseAnimator.setDuration(mDuration);
+            collapseAnimator.setDuration(DURATION);
             collapseAnimator.start();
         }
 
